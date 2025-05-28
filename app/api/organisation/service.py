@@ -44,7 +44,12 @@ def create_organisation_service(name: str, host: str, email: str, password: str)
             logger.error(f"Error inserting admin user into schema {schema}: {e}")
             raise AdminUserCreationError(schema, e)
 
-        return org
+        return {
+            "name": org.name,
+            "host": org.host,
+            "schema": org.schema,
+            "admin_email": org.admin_email,
+        }
 
 
 def get_organization_service(name: str):
