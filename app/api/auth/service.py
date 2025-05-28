@@ -14,6 +14,6 @@ def login_service(schema: str, email: str, password: str):
             raise AuthenticationError()
 
         access_token = create_access_token(
-            data={"sub": user.email},
+            data={"sub": user.email}, expires_delta=timedelta(minutes=30)
         )
-        return {"access_token": access_token, "token_type": "bearer"}
+        return {"access_token": access_token}
