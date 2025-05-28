@@ -35,14 +35,14 @@ class Settings(BaseSettings):
     def __new__(cls, *args, **kwargs):
         if cls._instance is None:
             logger.info("Creating new Settings instance")
-            print(f"\n{__name__}=====> \033[92mSettings __new__\033[0m\n")
+            logger.info(f"\n{__name__}=====> \033[92mSettings __new__\033[0m\n")
             cls._instance = super().__new__(cls)
         return cls._instance
 
     @classmethod
     def instance(cls) -> "Settings":
         logger.info("Accessing Settings instance")
-        print(f"\n{__name__}=====> \033[92mSettings instance method called\033[0m\n")
+        logger.info(f"\n{__name__}=====> \033[92mSettings instance method called\033[0m\n")
         if cls._instance is None:
             cls._instance = cls()
         return cls._instance
