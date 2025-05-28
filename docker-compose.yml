@@ -16,7 +16,12 @@ services:
   app:
     build: .
     environment:
-      - MASTER_DB_URL=postgresql://master_user:master_pass@db/master
+      - ENVIRONMENT=production
+      - DB_USER=master_user
+      - DB_PASS=master_pass
+      - DB_HOST=db
+      - DB_PORT=5432
+      - DB_NAME=master
     ports:
       - "8000:8000"
     depends_on:

@@ -1,11 +1,9 @@
-FROM python:3.12-alpine
-
-# Set environment variables
+FROM python:3.13-alpine
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
-    POETRY_VERSION=1.8.2
-
-# Install system dependencies
+    POETRY_VERSION=1.8.2 \
+    POETRY_HOME="/opt/poetry" \
+    PATH="/opt/poetry/bin:$PATH"
 RUN apk add --no-cache \
     gcc \
     libffi-dev \
@@ -15,23 +13,18 @@ RUN apk add --no-cache \
     python3-dev \
     linux-headers \
     libpq \
-    curl
-
-# Set working directory
+    curl \
+    git
+RUN curl -sSL https://install.python-poetry.org | python -
 WORKDIR /app
+COPY pyproject.toml poetry.lock* ./
+RUN poetry install --no-root
 
-# Copy dependencies
-COPY requirements.txt .
-
-# Install Python dependencies
-RUN pip install --no-cache-dir --upgrade pip \
-    && pip install --no-cache-dir -r requirements.txt
-
-# Copy the source code
 COPY . .
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod +x /usr/local/bin/entrypoint.sh
 
-# Expose port
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
 EXPOSE 8000
-
-# Run the FastAPI app
-CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["poetry", "run", "uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]

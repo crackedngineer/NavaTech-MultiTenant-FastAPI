@@ -1,0 +1,36 @@
+"""${message}
+
+Revision ID: ${up_revision}
+Revises: ${down_revision | comma,n}
+Create Date: ${create_date}
+
+"""
+from typing import Sequence, Union
+
+from alembic import op
+import sqlalchemy as sa
+${imports if imports else ""}
+
+from migrations.organisation import for_each_org_schema
+
+# revision identifiers, used by Alembic.
+revision: str = ${repr(up_revision)}
+down_revision: Union[str, None] = ${repr(down_revision)}
+branch_labels: Union[str, Sequence[str], None] = ${repr(branch_labels)}
+depends_on: Union[str, Sequence[str], None] = ${repr(depends_on)}
+
+@for_each_org_schema
+def upgrade(schema: str) -> None:
+    """Upgrade schema."""
+    preparer = sa.sql.compiler.IdentifierPreparer(op.get_bind().dialect)
+    schema_quoted = preparer.format_schema(schema)
+
+    ${upgrades if upgrades else "pass"}
+
+@for_each_org_schema
+def downgrade(schema: str) -> None:
+    """Downgrade schema."""
+    preparer = sa.sql.compiler.IdentifierPreparer(op.get_bind().dialect)
+    schema_quoted = preparer.format_schema(schema)
+
+    ${downgrades if downgrades else "pass"}
