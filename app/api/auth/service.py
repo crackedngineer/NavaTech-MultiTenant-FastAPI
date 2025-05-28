@@ -3,6 +3,7 @@ from ...database.connection import with_org_db
 from ...models.user import User
 from .controller import get_organisation_by_schema
 from app.utils import verify_password, create_access_token
+from .error import AuthenticationError
 
 
 def login_service(schema: str, email: str, password: str):
@@ -10,7 +11,7 @@ def login_service(schema: str, email: str, password: str):
         user = db.execute(User.__table__.select().where(User.email == email)).first()
 
         if not user or not verify_password(password, user.hashed_password):
-            raise Exception("Incorrect email or password")
+            raise AuthenticationError()
 
         access_token = create_access_token(
             data={"sub": user.email},
